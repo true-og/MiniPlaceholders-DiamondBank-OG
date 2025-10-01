@@ -1,10 +1,10 @@
-name: Template-OG
+name: MiniPlaceholders-DiamondBank-OG
 author: NotAlexNoyle
-description: A blank plugin for TrueOG from which to base other plugins off of.
-website: https://github.com/true-og/Template-OG/
+description: Provides MiniPlaceholders for DiamondBank-OG.
+website: https://github.com/true-og/DiamondBank-MiniPlaceholders-OG
 version: '${version}'
 api-version: '${apiVersion}'
-main: plugin.TemplateOG
+main: plugin.DiamondBankMiniPlaceholdersOG
 depend: 
-#  - DiamondBank-OG
+  - DiamondBank-OG
   - Utilities-OG
