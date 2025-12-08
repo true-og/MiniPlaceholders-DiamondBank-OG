@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,7 +22,6 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
     private static DiamondBankMiniPlaceholdersOG plugin;
     private static DiamondBankAPIJava diamondBankAPI;
     private static String pluginPrefix;
-    private static FileConfiguration config;
     // Cache for total shards for each player.
     private static final Map<UUID, Long> SHARD_CACHE = new ConcurrentHashMap<>();
     // Helps prevent duplicate fetches.
@@ -38,12 +36,6 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
 
         // Get the plugin name and format it into a prefix.
         pluginPrefix = ("[" + getPlugin().getName() + "]");
-
-        // Copy the config file from the jar to the server's filesystem.
-        saveDefaultConfig();
-
-        // Get the config file from the server's filesystem.
-        config = getConfig();
 
         // Initialize the DiamondBank-OG API.
         final RegisteredServiceProvider<DiamondBankAPIJava> provider = getServer().getServicesManager()
@@ -88,13 +80,6 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
     public static DiamondBankAPIJava diamondBankAPI() {
 
         return diamondBankAPI;
-
-    }
-
-    // Plugin config file getter (from filesystem) for secondary classes.
-    public static FileConfiguration config() {
-
-        return config;
 
     }
 
