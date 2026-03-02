@@ -11,8 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.trueog.diamondbankog.DiamondBankAPIJava;
 import net.trueog.diamondbankog.DiamondBankException;
+import net.trueog.diamondbankog.DiamondBankException.EconomyDisabledException;
+import net.trueog.diamondbankog.api.DiamondBankAPIJava;
 import net.trueog.utilitiesog.UtilitiesOG;
 
 // Main plugin class.
@@ -64,8 +65,20 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
 
         // Fancy Async MiniPlaceholder declaration that only runs once per player per
         // balance update.
-        UtilitiesOG.registerAudiencePlaceholder("diamondbankog_balance",
-                player -> getFormattedDiamondBalance(player.getUniqueId()));
+        UtilitiesOG.registerAudiencePlaceholder("diamondbankog_balance", player -> {
+
+            try {
+
+                return diamondBankAPI.shardsToDiamonds(diamondBankAPI.getTotalShards(player.getUniqueId()));
+
+            } catch (EconomyDisabledException economyDisabledException) {
+
+                economyDisabledException.printStackTrace();
+                return "&cERROR. RETRY.";
+
+            }
+
+        });
 
     }
 
@@ -124,14 +137,6 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
                 DiamondBankMiniPlaceholdersOG.disableSelf("The DiamondBank-OG economy is disabled — disabling "
                         + DiamondBankMiniPlaceholdersOG.getPlugin().getName() + "!");
 
-            }
-            // If the DiamondBank-OG database is having problems, do this...
-            catch (DiamondBankException.DatabaseException error) {
-
-                // Commit sudoku, inform console of the DiamondBank-OG database error.
-                DiamondBankMiniPlaceholdersOG.disableSelf("DiamondBank-OG database error — disabling "
-                        + DiamondBankMiniPlaceholdersOG.getPlugin().getName() + ". Cause: " + error.getMessage());
-
             } finally {
 
                 // Remove the lock from the anti double lookup mechanism.
@@ -140,32 +145,6 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
             }
 
         });
-
-    }
-
-    // Returns a formatted diamond balance string derived from the DiamondBank-OG
-    // API.
-    static String getFormattedDiamondBalance(UUID uuid) {
-
-        // Attempt to fetch the current shard total from the cache.
-        final Long shardTotal = SHARD_CACHE.get(uuid);
-        // If the cache is empty, do this...
-        if (shardTotal == null) {
-
-            // Kick off an Async balance cache refresh.
-            refreshShards(uuid);
-
-            // Return a neutral "loading" indicator until the player's balance does exist in
-            // the cache.
-            return "&eLoading... re-try";
-
-        }
-
-        // Translate Diamond Shards into Diamonds by dividing the shard total long by 9.
-        final long diamonds = shardTotal / 9L;
-
-        // Return formatted Diamond Balance.
-        return "&b" + diamonds;
 
     }
 

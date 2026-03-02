@@ -40,14 +40,6 @@ public class BalanceChangeListener implements PlayerBalanceChangedListener {
                         + DiamondBankMiniPlaceholdersOG.getPlugin().getName() + "!");
 
             }
-            // If the DiamondBank-OG database is having problems, do this...
-            catch (DiamondBankException.DatabaseException error) {
-
-                // Commit sudoku, inform console of the DiamondBank-OG database error.
-                DiamondBankMiniPlaceholdersOG.disableSelf("DiamondBank-OG database error — disabling "
-                        + DiamondBankMiniPlaceholdersOG.getPlugin().getName() + ". Cause: " + error.getMessage());
-
-            }
 
         });
 
