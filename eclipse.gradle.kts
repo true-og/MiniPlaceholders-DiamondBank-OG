@@ -26,7 +26,7 @@ configurations.creating {
 
 configure<EclipseModel> {
     project {
-        name = "MiniPlaceholders-OG-Plugin"
+        name = "MiniPlaceholders-DiamondBank-OG-Plugin"
     }
     classpath {
         plusConfigurations.add(ideLibs)
