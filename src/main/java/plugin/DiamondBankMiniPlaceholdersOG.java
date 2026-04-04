@@ -12,7 +12,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.trueog.diamondbankog.DiamondBankException;
-import net.trueog.diamondbankog.DiamondBankException.EconomyDisabledException;
 import net.trueog.diamondbankog.api.DiamondBankAPIJava;
 import net.trueog.utilitiesog.UtilitiesOG;
 
@@ -63,20 +62,22 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
         // Pre-warm balance cache for already-online players, such as in plugin reloads.
         Bukkit.getOnlinePlayers().forEach(p -> refreshShards(p.getUniqueId()));
 
-        // Fancy Async MiniPlaceholder declaration that only runs once per player per
-        // balance update.
+        // Cache-backed MiniPlaceholder — reads the pre-warmed SHARD_CACHE instead of
+        // making a blocking API call, so the main thread is never stalled by the
+        // DiamondBank transaction lock or a database round-trip.
         UtilitiesOG.registerAudiencePlaceholder("diamondbankog_balance", player -> {
 
-            try {
+            final Long cachedShards = SHARD_CACHE.get(player.getUniqueId());
+            if (cachedShards != null) {
 
-                return diamondBankAPI.shardsToDiamonds(diamondBankAPI.getTotalShards(player.getUniqueId()));
-
-            } catch (EconomyDisabledException economyDisabledException) {
-
-                economyDisabledException.printStackTrace();
-                return "&cERROR. RETRY.";
+                return diamondBankAPI.shardsToDiamonds(cachedShards);
 
             }
+
+            // Cache miss (player just joined, cache not yet warm) — trigger an async
+            // refresh and show nothing until the cache is populated.
+            refreshShards(player.getUniqueId());
+            return "";
 
         });
 
