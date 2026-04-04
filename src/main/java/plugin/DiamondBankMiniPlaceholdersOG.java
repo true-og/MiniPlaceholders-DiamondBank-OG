@@ -46,6 +46,7 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
 
             // Tell Bukkit to disable this plugin, and inform the console.
             disableSelf("DiamondBank-OG API is null – disabling " + getPlugin().getName() + "!");
+
             return;
 
         }

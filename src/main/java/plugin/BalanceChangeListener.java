@@ -12,11 +12,9 @@ public class BalanceChangeListener implements PlayerBalanceChangedListener {
     @Override
     public void onUpdate(PlayerBalanceChangedEvent event) {
 
-        // The event already carries the up-to-date shard totals, so compute the
-        // total directly instead of calling getTotalShards() — that would re-acquire
-        // the transaction lock and risk deadlocking against the main thread.
-        final long totalShards = event.getPlayerShards().getBank() + event.getPlayerShards().getInventory()
-                + event.getPlayerShards().getEnderChest();
+        // The event already carries the up-to-date shard totals, so fetch the
+        // total from the event.
+        final long totalShards = event.getPlayerShards().getTotal();
 
         // Cache the new balance for reference by the MiniPlaceholder.
         DiamondBankMiniPlaceholdersOG.cacheShardTotal(event.getUuid(), totalShards);
