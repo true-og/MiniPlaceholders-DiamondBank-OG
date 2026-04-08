@@ -2,8 +2,8 @@
 // Author: NotAlexNoyle.
 package plugin;
 
-import net.trueog.diamondbankog.PlayerBalanceChangedEvent;
-import net.trueog.diamondbankog.PlayerBalanceChangedListener;
+import net.trueog.diamondbankog.api.PlayerBalanceChangedEvent;
+import net.trueog.diamondbankog.api.PlayerBalanceChangedListener;
 
 // Updates the balance cache for the MiniPlaceholder upon balance changes.
 public class BalanceChangeListener implements PlayerBalanceChangedListener {
