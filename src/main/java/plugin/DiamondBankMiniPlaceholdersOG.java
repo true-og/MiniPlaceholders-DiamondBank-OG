@@ -68,6 +68,14 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
         // DiamondBank transaction lock or a database round-trip.
         UtilitiesOG.registerAudiencePlaceholder("diamondbankog_balance", player -> {
 
+            // Only show balance in vanilla overworld, nether, and end.
+            final String worldName = player.getWorld().getName();
+            if (!worldName.equals("world") && !worldName.equals("world_nether") && !worldName.equals("world_the_end")) {
+
+                return "&8N/A";
+
+            }
+
             final Long cachedShards = SHARD_CACHE.get(player.getUniqueId());
             if (cachedShards != null) {
 
