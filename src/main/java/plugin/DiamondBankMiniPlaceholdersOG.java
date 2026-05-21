@@ -26,6 +26,9 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
     private static final Map<UUID, Long> SHARD_CACHE = new ConcurrentHashMap<>();
     // Helps prevent duplicate fetches.
     private static final Set<UUID> IN_FLIGHT = ConcurrentHashMap.newKeySet();
+    // Throttles the "economy disabled" warning so logs don't flood while the
+    // DiamondBank-OG economy is offline.
+    private static volatile boolean economyDisabledWarned = false;
 
     // When the server loads the plugin, do this...
     @Override
@@ -139,13 +142,22 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
                 // MiniPlaceholders.
                 SHARD_CACHE.put(uuid, totalShards);
 
+                // Reset the warning gate so a fresh outage produces a fresh log line.
+                economyDisabledWarned = false;
+
             }
             // If the DiamondBank-OG economy is disabled, do this...
             catch (DiamondBankException.EconomyDisabledException error) {
 
-                // Commit sudoku, inform console of the DiamondBank-OG economy being disabled.
-                DiamondBankMiniPlaceholdersOG.disableSelf("The DiamondBank-OG economy is disabled — disabling "
-                        + DiamondBankMiniPlaceholdersOG.getPlugin().getName() + "!");
+                // Skip this refresh; placeholder will fall back to the stale cache value
+                // (or blank on cache miss). Warn once per outage so logs don't flood.
+                if (!economyDisabledWarned) {
+
+                    economyDisabledWarned = true;
+                    UtilitiesOG.logToConsole(pluginPrefix,
+                            "The DiamondBank-OG economy is disabled — skipping balance refreshes until it returns.");
+
+                }
 
             } finally {
 
