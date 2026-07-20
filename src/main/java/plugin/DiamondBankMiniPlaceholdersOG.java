@@ -82,7 +82,9 @@ public class DiamondBankMiniPlaceholdersOG extends JavaPlugin {
             final Long cachedShards = SHARD_CACHE.get(player.getUniqueId());
             if (cachedShards != null) {
 
-                return diamondBankAPI.shardsToDiamonds(cachedShards);
+                // Trim the ".0" from whole balances; base-9 fractions (.1-.8) stay.
+                final String diamonds = diamondBankAPI.shardsToDiamonds(cachedShards);
+                return diamonds.endsWith(".0") ? diamonds.substring(0, diamonds.length() - 2) : diamonds;
 
             }
 
