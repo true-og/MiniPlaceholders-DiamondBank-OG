@@ -1,7 +1,7 @@
 name: MiniPlaceholders-DiamondBank-OG
 author: NotAlexNoyle
 description: Provides MiniPlaceholders for DiamondBank-OG.
-website: https://github.com/true-og/DiamondBank-MiniPlaceholders-OG
+website: https://git.trueog.net/trueog/MiniPlaceholders-DiamondBank-OG
 version: '${version}'
 api-version: '${apiVersion}'
 main: plugin.DiamondBankMiniPlaceholdersOG
